@@ -30,7 +30,7 @@ export default function Home() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Image className="backgroundImage" src={backgroundImage} />
+      <Image className="backgroundImage" alt="" src={backgroundImage} />
       <Container className="container" component="main" maxWidth="sm">
         <Box
           sx={{
