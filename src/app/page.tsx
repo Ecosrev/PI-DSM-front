@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import theme from "../../theme/Theme";
 import { ThemeProvider } from "@mui/material/styles";
-import backgroundImage from "../../projeto/public/images/imagem1.jpg";
+import backgroundImage from "../../../public/images/imagem1.jpg";
 import "../style/Login.css";
 
 export default function Home() {

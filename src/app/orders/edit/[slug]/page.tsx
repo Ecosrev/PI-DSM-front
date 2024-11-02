@@ -1,6 +1,6 @@
 "use client";
 
-import EditTemplate from "@/components/templates/orders/EditTemplate";
+import EditTemplate from "@/components/templates/beneficio/EditTemplate";
 
 interface OrderEditProps {
   params: { slug: string };
