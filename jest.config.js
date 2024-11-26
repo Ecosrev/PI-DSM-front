@@ -20,6 +20,7 @@ module.exports = {
   testEnvironment: "jsdom",
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    "\\.(css|less|scss|sass)$": "<rootDir>/_mocks/styleMock.ts", // Mock para arquivos de estilo
   },
   testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
   transform: {
@@ -29,6 +30,8 @@ module.exports = {
         tsconfig: "tsconfig.jest.json",
       },
     ],
+    "^.+\\.(svg|jpg|jpeg|png|gif|webp|avif|ico|bmp|tiff)$":
+      "jest-transform-stub", // Adicionando jest-transform-stub para arquivos de mídia
   },
   transformIgnorePatterns: ["/node_modules/"],
   testEnvironmentOptions: {

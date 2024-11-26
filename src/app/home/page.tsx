@@ -1,52 +1,61 @@
 "use client";
 
 import Layout from "@/components/UI/organisms/Layout";
-import { ThemeProvider } from "@emotion/react";
-import theme from "../../../theme/Theme";
+
 import { Box, Container, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import backgroundImage2 from "../../../public/images/imagem2.jpg";
 import "../../style/MenuUser.css";
 import RecyclingIcon from "@mui/icons-material/Recycling";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
+import Carousel from "@/components/UI/molecules/Carousel";
 
 export default function Home() {
   const router = useRouter();
 
-  return (
-    <ThemeProvider theme={theme}>
-      <Layout>
-        <Carousel />
-        <Introduction />
-        <Services />
-        <Testimonials />
-      </Layout>
-    </ThemeProvider>
-  );
-}
+  const carouselSlides = [
+    {
+      imageSrc: "/images/imagem1.jpg",
+      altText: "Imagem 1",
+      caption: "Descubra como reciclar eletrônicos de forma sustentável!",
+    },
+    {
+      imageSrc: "/images/backgroundImg.jpeg",
+      altText: "Imagem 2",
+      caption: "Transforme resíduos em pontos e conquiste prêmios!",
+    },
+    {
+      imageSrc: "/images/macawImg.jpeg",
+      altText: "Imagem 3",
+      caption: "Junte-se à mudança por um planeta mais limpo.",
+    },
+    {
+      imageSrc: "/images/toucanImg.jpeg",
+      altText: "Imagem 4",
+      caption:
+        "Converta resíduos em oportunidades e ajude a preservar o meio ambiente.",
+    },
+    {
+      imageSrc: "/images/beeImg.jpeg",
+      altText: "Imagem 5",
+      caption:
+        "Dê o primeiro passo para um futuro mais sustentável com a reciclagem responsável.",
+    },
+    {
+      imageSrc: "/images/imagem3.jpg",
+      altText: "Imagem 5",
+      caption:
+        "Recicle hoje para transformar o amanhã em um lugar melhor para todos.",
+    },
+  ];
 
-function Carousel() {
   return (
-    <Box
-      sx={{ backgroundColor: "#f9f9f9", padding: "60px 0" }}
-      textAlign="center"
-    >
-      <Container>
-        <div className="image-container">
-          <Image
-            className="backgroundImage2"
-            src={backgroundImage2}
-            alt="Background Image"
-          />
-          <h4 className="overlay-text">
-            Descarte seus resíduos eletrônicos corretamente e ajude a construir
-            um planeta mais limpo!
-          </h4>
-        </div>
-      </Container>
-    </Box>
+    <Layout>
+      <Carousel slides={carouselSlides} />
+      <Introduction />
+      <Services />
+      <Testimonials />
+    </Layout>
   );
 }
 
@@ -133,7 +142,6 @@ function Testimonials() {
           <Grid item xs={12} md={4}>
             <blockquote>
               <Typography sx={{ fontSize: "20px" }}>
-                {" "}
                 &quot;O EcosRev facilitou a reciclagem de eletrônicos na minha
                 casa. Além de ajudar o meio ambiente, ainda ganho
                 recompensas!&quot;
@@ -144,7 +152,6 @@ function Testimonials() {
           <Grid item xs={12} md={4}>
             <blockquote>
               <Typography sx={{ fontSize: "20px" }}>
-                {" "}
                 &quot;Uma excelente iniciativa! Agora meus filhos entendem a
                 importância de reciclar e ainda se divertem trocando pontos por
                 prêmios.&quot;

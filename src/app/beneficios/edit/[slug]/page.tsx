@@ -1,52 +1,50 @@
 "use client";
 
-import { withDataFetching } from "@/components/HOCS/withDataFetching";
+import { withDataFetchingBenefit } from "@/components/HOCS/withDataFetchingBenefit";
 import EditTemplate from "@/components/templates/beneficio/EditTemplate";
 import { env } from "@/config/env";
 import { IBeneficios } from "@/interfaces/IBeneficios";
 import { useEffect, useState } from "react";
-import { ThemeProvider } from "@emotion/react";
-import theme from "../../../../../theme/Theme";
 import Layout from "@/components/UI/organisms/Layout";
 import { Container } from "@mui/material";
+import { withAdminProtection } from "@/components/HOCS/withAdminProtection";
 
 interface BeneficioEditProps {
   params: { slug: string };
-  data: any;
+  dados: any;
 }
 
-const BeneficiosEdit: React.FC<BeneficioEditProps> = ({ params, data }) => {
+const BeneficiosEdit: React.FC<BeneficioEditProps> = ({ params, dados }) => {
   const [beneficio, setBeneficio] = useState<IBeneficios>();
 
   useEffect(() => {
-    if (!data) return;
+    if (!dados) return;
     const {
-      id,
-      nome: name,
-      endereco: address,
-      pontos: points,
-      quantidade: qtd,
-    } = data;
+      _id,
+      nome: nome,
+      data: data,
+      endereco: endereco,
+      pontos: pontos,
+      quantidade: quantidade,
+    } = dados[0];
 
     setBeneficio({
-      id,
-      name,
-      address,
-      points,
-      qtd,
+      _id,
+      data,
+      nome,
+      endereco,
+      pontos,
+      quantidade,
     });
-  }, [data]);
+  }, [dados]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Layout>
-        <Container sx={{ paddingTop: 4 }}>
-          <EditTemplate beneficio={beneficio} />
-        </Container>
-      </Layout>
-    </ThemeProvider>
-
-  )
+    <Layout>
+      <Container sx={{ paddingTop: 4 }}>
+        <EditTemplate beneficio={beneficio} />
+      </Container>
+    </Layout>
+  );
 };
 
-export default withDataFetching(`${env.apiBaseUrl}/beneficios`)(BeneficiosEdit);
+export default withAdminProtection(withDataFetchingBenefit()(BeneficiosEdit));

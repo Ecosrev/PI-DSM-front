@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![Foto de Fundo para Linkedin Amarelo Lâmpada Minimalista (1)](https://github.com/Ecosrev/ecosrevMongo/assets/126609101/5f7ca8a9-9032-4ae4-9ca8-96eb2b656ffb)
 
-## Getting Started
+🍃Grupo Ecosrev
+---
 
-First, run the development server:
+## 👤Integrantes
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+| Nome        |  
+| ------------- | 
+| Gabriel Yamaoka Bernardes          | 
+| Gesley Rosa               |
+| João Lucas Melo           |
+| Laura Jane Antunes        |
+| Mariana Hirata            | 
+| Mateus Ferreira           | 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+###
+>> Trabalho desenvolvido com o foco no projeto Ecosrev, visando uma melhora em sua base tanto no front-end quanto no back-end.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+>> O Ecosrev é um projeto focado em melhorar o meio ambiente, fornecendo um incentivo ao recolher lixo eletrônico dos habitantes em troca de benefícios
+###
+## 📃Sobre o projeto
 
-## Learn More
+O Projeto EcosRev é um website desenvolvido com o propósito de incentivar o descarte correto de resíduos eletroeletrônicos, promovendo a conexão entre empresas coletoras de lixo eletrônico e cidadãos. O objetivo principal é facilitar o processo de descarte, aumentando a conscientização ambiental e contribuindo para a preservação do meio ambiente.
 
-To learn more about Next.js, take a look at the following resources:
+## 💡Protótipo 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Acesse o link de visualização interativo do nosso Figma: https://www.figma.com/design/szHO2FNtWtuBxW8hrbRYau/ECOSREV-BD?node-id=0-1&t=OjwOPtuo1edvRLnb-1
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 🌐Tecnologias Utilizadas
 
-## Deploy on Vercel
+- Frontend: React.js, Next.js, Tyoescript e Atomic Desing.
+- Backend: Node.js, Express.js, MongoDB
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

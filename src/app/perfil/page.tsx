@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useEffect, useState } from 'react';
 import { Container, Button, TextField, Card, CardContent, CardHeader } from '@mui/material';
 import '../../style/Perfil.css';
@@ -6,7 +7,6 @@ import Image from 'next/image';
 import userImage from "../../../public/images/userImg.png";
 import Layout from "@/components/UI/organisms/Layout";
 import { ThemeProvider } from "@emotion/react";
-import theme from "../../../theme/Theme";
 
 const PerfilPage = () => {
   const [userData, setUserData] = useState({
@@ -16,8 +16,7 @@ const PerfilPage = () => {
     profileImage: ''
   });
 
-  // Função que simula a obtenção dos dados do perfil do usuário
-  useEffect(() => {
+   useEffect(() => {
     const preencherCamposPerfil = async () => {
       try {
         const response = await fetch('https://randomuser.me/api/');
@@ -47,52 +46,50 @@ const PerfilPage = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Layout>
-        <Container sx={{ paddingTop: 4 }}>          <Card className="perfilCard" variant="outlined">
-            <CardHeader title="Perfil do Usuário" />
-            <CardContent>
-              <div className="imagemPerfil">
-                <Image className="userImage" src={userImage} alt="User Image Perfil" width={120} height={120} />
-              </div>
-              <form id="profileForm" onSubmit={enviarFormulario}>
-                <TextField
-                  label="Nome"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  value={userData.nome}
-                  onChange={(e) => setUserData({ ...userData, nome: e.target.value })}
-                  required
-                />
-                <TextField
-                  label="Endereço"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  value={userData.endereco}
-                  onChange={(e) => setUserData({ ...userData, endereco: e.target.value })}
-                  required
-                />
-                <TextField
-                  label="Senha"
-                  type="password"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  value={userData.senha}
-                  onChange={(e) => setUserData({ ...userData, senha: e.target.value })}
-                  required
-                />
-                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-                  Salvar
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </Container>
-      </Layout>
-    </ThemeProvider>
+    <Layout>
+      <Container sx={{ paddingTop: 4 }}>          <Card className="perfilCard" variant="outlined">
+          <CardHeader title="Perfil do Usuário" />
+          <CardContent>
+            <div className="imagemPerfil">
+              <Image className="userImage" src={userImage} alt="User Image Perfil" width={120} height={120} />
+            </div>
+            <form id="profileForm" onSubmit={enviarFormulario}>
+              <TextField
+                label="Nome"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={userData.nome}
+                onChange={(e) => setUserData({ ...userData, nome: e.target.value })}
+                required
+              />
+              <TextField
+                label="Endereço"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={userData.endereco}
+                onChange={(e) => setUserData({ ...userData, endereco: e.target.value })}
+                required
+              />
+              <TextField
+                label="Senha"
+                type="password"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={userData.senha}
+                onChange={(e) => setUserData({ ...userData, senha: e.target.value })}
+                required
+              />
+              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                Salvar
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </Container>
+    </Layout>
   );
 };
 
