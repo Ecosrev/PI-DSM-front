@@ -13,6 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0  # Importante para buscar todas as tags e histórico completo
           token: ${{ secrets.CI_GITHUB_TOKEN }}
  
       - name: Configurar Node.js
@@ -26,14 +27,16 @@ jobs:
       - name: Instalar semver
         run: npm install -g semver
  
-      - name: Criar nova tag caso não exista
+      - name: Verificar e criar tag inicial se não existir
         id: create_initial_tag
         env:
           GH_TOKEN: ${{ secrets.CI_GH_TOKEN }}
         run: |
-          if [ -z "$(git tag)" ]; then
-            git config --global user.name 'github-actions'
-            git config --global user.email 'github-actions@github.com'
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          
+          # Verifica se a tag v0.0.0 já existe
+          if ! git rev-parse "v0.0.0" >/dev/null 2>&1; then
             git tag -a v0.0.0 -m "Initial release"
             git push origin v0.0.0
           fi
@@ -47,27 +50,27 @@ jobs:
             LAST_TAG="v0.0.0"
           fi
           echo "Versão Atual: $LAST_TAG"
-          if [ "$LAST_TAG" = "v0.0.0" ]; then
-            COMMITS=$(git log --pretty=format:"%s")
-          else
-            COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s")
-          fi
+          
+          # Modificação para corrigir o loop de commits
+          COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" | tr '\n' ' ')
+          
           echo "Commits desde a última tag:"
           echo "$COMMITS"
+          
           # Inicializando variáveis
           MAJOR=0
           MINOR=0
           PATCH=0
+          
           # Analisando mensagens de commit
-          for COMMIT in "$COMMITS"; do
-            if [[ "$COMMIT" == *"BREAKING CHANGE"* ]]; then
-              MAJOR=1
-            elif [[ "$COMMIT" == *"feat"* ]]; then
-              MINOR=1
-            elif [[ "$COMMIT" == *"fix"* ]]; then
-              PATCH=1
-            fi
-          done
+          if [[ "$COMMITS" == *"BREAKING CHANGE"* ]]; then
+            MAJOR=1
+          elif [[ "$COMMITS" == *"feat"* ]]; then
+            MINOR=1
+          elif [[ "$COMMITS" == *"fix"* ]]; then
+            PATCH=1
+          fi
+          
           # Calculando a nova versão usando semver
           CURRENT_VERSION=${LAST_TAG#v}
           NEW_VERSION=$CURRENT_VERSION
@@ -78,12 +81,14 @@ jobs:
           elif [[ $PATCH -eq 1 ]]; then
             NEW_VERSION=$(semver -i patch $CURRENT_VERSION)
           fi
+          
           echo "Nova versão: $NEW_VERSION"
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
  
       - name: Atualizar versão no package.json
         run: |
           npm version ${{ env.new_version }} --no-git-tag-version
+      
       - name: Commit e push
         env:
           GH_TOKEN: ${{ secrets.CI_GH_TOKEN }}
@@ -92,5 +97,10 @@ jobs:
           git config --global user.email 'github-actions@github.com'
           git add package.json
           git commit -m "chore(release): version ${{ env.new_version }}"
-          git tag v${{ env.new_version }}
-          git push origin master --tags
+          
+          # Adiciona um check para evitar erro de tag existente
+          if ! git tag v${{ env.new_version }} 2>/dev/null; then
+            echo "Tag já existe, pulando criação de tag"
+          else
+            git push origin master --tags
+          fi
