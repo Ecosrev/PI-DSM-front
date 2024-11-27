@@ -1,105 +1,97 @@
 name: Pipeline CI
-
+ 
 on:
   push:
     branches:
       - master
-    paths:
-      - '!package.json'  # Exclui mudanças só no package.json
-
+ 
 jobs:
-  build:
+  version:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'chore(release)')"
-
+ 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checar repositório
+        uses: actions/checkout@v2
         with:
-          token: ${{ secrets.CI_GITHUB_TOKEN }}
-
-      - name: Configurando Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22'
-
-      - name: Instalando dependências
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
-  versioning:
-    runs-on: ubuntu-latest
-    needs: build
-    if: "!contains(github.event.head_commit.message, 'chore(release)')"
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.CI_GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0
-
-      - name: Configurando Node
-        uses: actions/setup-node@v3
+ 
+      - name: Configurar Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: '22'
-
-      - name: Obter versão atual
+          node-version: '14'
+ 
+      - name: Instalar dependências
+        run: npm install
+ 
+      - name: Instalar semver
+        run: npm install -g semver
+ 
+      - name: Criar nova tag caso não exista
+        id: create_initial_tag
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          if [ -z "$(git tag)" ]; then
+            git config --global user.name 'github-actions'
+            git config --global user.email 'github-actions@github.com'
+            git tag -a v0.0.0 -m "Initial release"
+            git push origin v0.0.0
+          fi
+ 
+      - name: Calcular nova versão
         id: version
         run: |
-          VERSION=$(cat package.json | jq -r '.version')
-          echo "current_version=$VERSION" >> $GITHUB_ENV
-
-      - name: Determinar incremento de versão
-        id: increment
-        run: |
-          LAST_COMMIT=$(git log -1 --pretty=%B)
-          if [[ "$LAST_COMMIT" == feat* ]]; then
-            INCREMENT="minor"
-          elif [[ "$LAST_COMMIT" == fix* ]]; then
-            INCREMENT="patch"
-          elif [[ "$LAST_COMMIT" == major* ]]; then
-            INCREMENT="major"
+          git fetch --tags
+          LAST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          if [ -z "$LAST_TAG" ]; then
+            LAST_TAG="v0.0.0"
+          fi
+          echo "Versão Atual: $LAST_TAG"
+          if [ "$LAST_TAG" = "v0.0.0" ]; then
+            COMMITS=$(git log --pretty=format:"%s")
           else
-            INCREMENT="patch" # fallback
+            COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s")
           fi
-          echo "increment_type=$INCREMENT" >> $GITHUB_ENV
-
-      - name: Incrementar versão
-        id: new_version
-        run: |
-          CURRENT_VERSION=${{ env.current_version }}
-          INCREMENT_TYPE=${{ env.increment_type }}
-
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
-          if [ "$INCREMENT_TYPE" = "major" ]; then
-            MAJOR=$((MAJOR + 1))
-            MINOR=0
-            PATCH=0
-          elif [ "$INCREMENT_TYPE" = "minor" ]; then
-            MINOR=$((MINOR + 1))
-            PATCH=0
-          elif [ "$INCREMENT_TYPE" = "patch" ]; then
-            PATCH=$((PATCH + 1))
+          echo "Commits desde a última tag:"
+          echo "$COMMITS"
+          # Inicializando variáveis
+          MAJOR=0
+          MINOR=0
+          PATCH=0
+          # Analisando mensagens de commit
+          for COMMIT in "$COMMITS"; do
+            if [[ "$COMMIT" == *"BREAKING CHANGE"* ]]; then
+              MAJOR=1
+            elif [[ "$COMMIT" == *"feat"* ]]; then
+              MINOR=1
+            elif [[ "$COMMIT" == *"fix"* ]]; then
+              PATCH=1
+            fi
+          done
+          # Calculando a nova versão usando semver
+          CURRENT_VERSION=${LAST_TAG#v}
+          NEW_VERSION=$CURRENT_VERSION
+          if [[ $MAJOR -eq 1 ]]; then
+            NEW_VERSION=$(semver -i major $CURRENT_VERSION)
+          elif [[ $MINOR -eq 1 ]]; then
+            NEW_VERSION=$(semver -i minor $CURRENT_VERSION)
+          elif [[ $PATCH -eq 1 ]]; then
+            NEW_VERSION=$(semver -i patch $CURRENT_VERSION)
           fi
-          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-
+          echo "Nova versão: $NEW_VERSION"
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
-
+ 
       - name: Atualizar versão no package.json
         run: |
-          NEW_VERSION=${{ env.new_version }}
-          jq ".version = \"$NEW_VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
-
-      - name: Commitar nova versão
+          npm version ${{ env.new_version }} --no-git-tag-version
+      - name: Commit e push
         env:
-          GH_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
           git add package.json
-          git commit -m "chore(release): ${{ env.new_version }} [skip ci]"
-          git tag -a "v${{ env.new_version }}" -m "Release version ${{ env.new_version }}"
+          git commit -m "chore(release): version ${{ env.new_version }}"
+          git tag v${{ env.new_version }}
           git push origin master --tags
