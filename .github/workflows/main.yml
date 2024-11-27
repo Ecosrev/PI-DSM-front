@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 
 jobs:
   build:
@@ -24,12 +21,78 @@ jobs:
       - name: Instalando dependências
         run: npm install
 
-      #- name: Lint code
-      #  run: npm run lint
-
       - name: Build
         run: npm run build
 
+  versioning:
+    runs-on: ubuntu-latest
+    needs: build
 
-      #- name: Check Coverage
-      #  run: npx jest --coverage --coverageThreshold="{\"global\":{\"branches\":80,\"functions\":80,\"lines\":80,\"statements\":80}}"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configurando Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      - name: Obter versão atual
+        id: version
+        run: |
+          VERSION=$(cat package.json | jq -r '.version')
+          echo "current_version=$VERSION" >> $GITHUB_ENV
+
+      - name: Determinar incremento de versão
+        id: increment
+        run: |
+          LAST_COMMIT=$(git log -1 --pretty=%B)
+          if [[ "$LAST_COMMIT" == feat:* ]]; then
+            INCREMENT="minor"
+          elif [[ "$LAST_COMMIT" == fix:* ]]; then
+            INCREMENT="patch"
+          elif [[ "$LAST_COMMIT" == major:* ]]; then
+            INCREMENT="major"
+          else
+            INCREMENT="patch" # fallback
+          fi
+          echo "increment_type=$INCREMENT" >> $GITHUB_ENV
+
+      - name: Incrementar versão
+        id: new_version
+        run: |
+          # Obter versão atual e tipo de incremento
+          CURRENT_VERSION=${{ env.current_version }}
+          INCREMENT_TYPE=${{ env.increment_type }}
+
+          # Incrementar a versão
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+          if [ "$INCREMENT_TYPE" = "major" ]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [ "$INCREMENT_TYPE" = "minor" ]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          elif [ "$INCREMENT_TYPE" = "patch" ]; then
+            PATCH=$((PATCH + 1))
+          fi
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Atualizar versão no package.json
+        run: |
+          NEW_VERSION=${{ env.new_version }}
+          jq ".version = \"$NEW_VERSION\"" package.json > package.tmp.json && mv package.tmp.json package.json
+
+      - name: Commitar nova versão
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add package.json
+          git commit -m "chore(release): ${{ env.new_version }}"
+          git tag -a "v${{ env.new_version }}" -m "Release version ${{ env.new_version }}"
+          git push origin master --tags
