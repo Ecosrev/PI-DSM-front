@@ -10,11 +10,10 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
-      - name: Checar repositório
-        uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GH_TOKEN }}
-          fetch-depth: 0
+          token: ${{ secrets.CI_GITHUB_TOKEN }}
  
       - name: Configurar Node.js
         uses: actions/setup-node@v2
@@ -30,7 +29,7 @@ jobs:
       - name: Criar nova tag caso não exista
         id: create_initial_tag
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.CI_GH_TOKEN }}
         run: |
           if [ -z "$(git tag)" ]; then
             git config --global user.name 'github-actions'
@@ -87,7 +86,7 @@ jobs:
           npm version ${{ env.new_version }} --no-git-tag-version
       - name: Commit e push
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.CI_GH_TOKEN }}
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
