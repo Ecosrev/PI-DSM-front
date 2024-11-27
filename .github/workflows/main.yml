@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - 'package.json'  # Ignora commits no package.json
-      - 'chore(release):'  # Ignora commits de release
+    paths:
+      - '!package.json'  # Exclui mudanças só no package.json
 
 jobs:
   build:
