@@ -8,7 +8,10 @@ const api = axios.create({
 });
 // Adiciona o token automaticamente em todas as requisições
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("authToken");
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("authToken")
+      : "valor-padrão";
   if (token) {
     config.headers["access-token"] = token;
   }
