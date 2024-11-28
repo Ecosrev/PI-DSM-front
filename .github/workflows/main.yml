@@ -84,11 +84,11 @@ jobs:
           
           echo "Nova versão: $NEW_VERSION"
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
- 
+
       - name: Atualizar versão no package.json
         run: |
-          npm version ${{ env.new_version }} --no-git-tag-version --alow-same-version
-      
+          npm version ${{ env.new_version }} --no-git-tag-version
+
       - name: Commit mudanças
         env:
           GH_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
@@ -106,9 +106,3 @@ jobs:
           else
             echo "Sem mudanças para commitar"
           fi
-      - name: Criar tag
-        env:
-          GH_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
-        run: |
-          git tag v${{ env.new_version }}
-          git push origin v${{ env.new_version }}
