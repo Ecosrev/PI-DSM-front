@@ -1,32 +1,32 @@
 name: Pipeline CI
- 
+
 on:
   push:
     branches:
       - master
- 
+
 jobs:
   version:
     runs-on: ubuntu-latest
- 
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Importante para buscar todas as tags e histórico completo
           token: ${{ secrets.CI_GITHUB_TOKEN }}
- 
+
       - name: Configurar Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
- 
+
       - name: Instalar dependências
         run: npm install
- 
+
       - name: Instalar semver
         run: npm install -g semver
- 
+
       - name: Verificar e criar tag inicial se não existir
         id: create_initial_tag
         env:
@@ -34,13 +34,13 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          
+
           # Verifica se a tag v0.0.0 já existe
           if ! git rev-parse "v0.0.0" >/dev/null 2>&1; then
             git tag -a v0.0.0 -m "Initial release"
             git push origin v0.0.0
           fi
- 
+
       - name: Calcular nova versão
         id: version
         run: |
@@ -99,10 +99,15 @@ jobs:
           # Adiciona todas as mudanças pendentes
           git add package.json package-lock.json
           
-          # Verifica se há mudanças para commitar
-          if [[ -n "$(git status --porcelain)" ]]; then
-            git commit -m "chore(release): version ${{ env.new_version }}"
-            git push origin master
+          # Verifica se houve mudanças no package.json
+          if [[ -n "$(git diff --cached --name-only)" ]]; then
+            # Verifica se o commit foi feito por 'github-actions' para evitar loop
+            if [[ "${GITHUB_ACTOR}" != "github-actions" ]]; then
+              git commit -m "chore(release): version ${{ env.new_version }}"
+              git push origin master
+            else
+              echo "Commit realizado pelo GitHub Actions, evitando loop."
+            fi
           else
             echo "Sem mudanças para commitar"
           fi
