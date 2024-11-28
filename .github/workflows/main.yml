@@ -106,4 +106,3 @@ jobs:
           else
             echo "Sem mudanças para commitar"
           fi
-          fi
