@@ -87,7 +87,7 @@ jobs:
  
       - name: Atualizar versão no package.json
         run: |
-          npm version ${{ env.new_version }} --no-git-tag-version --allow-same-version
+          npm version ${{ env.new_version }} --no-git-tag-version 
       
       - name: Commit mudanças
         env:
