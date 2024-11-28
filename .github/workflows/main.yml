@@ -89,6 +89,11 @@ jobs:
         run: |
           npm version ${{ env.new_version }} --no-git-tag-version --allow-same-version
 
+      - name: Criar e push nova tag
+        run: |
+          git tag v${{ env.new_version }}
+          git push origin v${{ env.new_version }}
+
       - name: Commit mudanças
         env:
           GH_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
