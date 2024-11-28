@@ -89,10 +89,15 @@ jobs:
         run: |
           npm version ${{ env.new_version }} --no-git-tag-version --allow-same-version
 
-      - name: Criar e push nova tag
+      - name: Criar e push nova tag, se não existir
         run: |
-          git tag v${{ env.new_version }}
-          git push origin v${{ env.new_version }}
+          # Verificar se a tag já existe
+          if git rev-parse "v${{ env.new_version }}" >/dev/null 2>&1; then
+            echo "Tag v${{ env.new_version }} já existe. Pulando criação de tag."
+          else
+            git tag v${{ env.new_version }}
+            git push origin v${{ env.new_version }}
+          fi
 
       - name: Commit mudanças
         env:
