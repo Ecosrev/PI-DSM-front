@@ -2,8 +2,6 @@
 
 ## 🍃Grupo Ecosrev
 
-## 0.1.1?
-
 ## 👤Integrantes
 
 | Nome                      |
