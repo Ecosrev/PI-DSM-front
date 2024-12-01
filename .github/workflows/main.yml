@@ -111,3 +111,20 @@ jobs:
           else
             echo "Sem mudanças para commitar"
           fi
+      - name: Efetuar login no docker hub
+        uses: docker/login-action@2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: criar imagem docker
+        run: |
+          docker build -t $ {{ secrets.DOCKERHUB_USERNAME }}/ecosrev-frontend:${{ env.new_version }} .
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/fate-dsm:${{ env.new_version }} ${{ secrets.DOCKERHUB_USERNAME }}/ecosrev-frontend:latest
+
+      - name: Efetuar push da imagem
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/ecosrev-frontend:${{ env.new_version }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/ecosrev-frontend:latest
+      
+      
