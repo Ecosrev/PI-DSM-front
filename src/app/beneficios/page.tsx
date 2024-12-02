@@ -72,6 +72,7 @@ const Beneficios = () => {
           rows={rows}
           headCells={headCells}
           editPath="/beneficios/edit"
+          title={""}
         />
       </Container>
     </Layout>

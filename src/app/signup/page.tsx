@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import { Box, Container, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
-import Link from 'next/link';
-import axios from "axios";
+import Link from "next/link";
 import Header from "../../components/UI/molecules/Header";
 import ButtonAtom from "@/components/UI/atoms/ButtonAtom";
 import { FormTextField } from "@/components/UI/atoms/FormTextField";
@@ -42,21 +41,29 @@ const Signup: React.FC = () => {
       setError("As senhas não coincidem!");
       return;
     }
-    const { confirmPassword, ...dataToSend } = formData
+
+    const { confirmPassword, ...dataToSend } = formData;
+
     try {
-      const response = userService.createUser(dataToSend);
+      await userService.createUser(dataToSend);
       setSuccess("Cadastro realizado com sucesso!");
+      setError("");
       setFormData({ nome: "", email: "", senha: "", confirmPassword: "" });
-      router.push("");
-    } catch (error) {
+
+      // Adiciona um delay de 2 segundos antes do redirecionamento
+      setTimeout(() => {
+        router.push("/"); 
+      }, 2000);
+    } catch (err) {
       setError("Erro ao cadastrar usuário!");
+      setSuccess("");
     }
   };
 
   return (
     <AuthTemplate backgroundImage={backgroundRoadImage.src}>
       {/* O Header */}
-      <Header/> 
+      <Header />
 
       <Container
         component="main"
@@ -77,12 +84,20 @@ const Signup: React.FC = () => {
             flexDirection: "column",
             alignItems: "center",
             width: "100%",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
             borderRadius: "10px",
             padding: 4,
           }}
         >
-          <Typography variant="h5" color="primary" gutterBottom>
+          <Typography
+            variant="h5"
+            color="primary"
+            gutterBottom
+            sx={{
+              textShadow: "2px 2px 4px rgba(255, 255, 255, 1)",
+              color: "primary.main",
+            }}
+          >
             Cadastro
           </Typography>
 
@@ -133,8 +148,13 @@ const Signup: React.FC = () => {
 
             <ButtonAtom
               type="submit"
-              fullWidth
-              sx={{ marginTop: 3, marginBottom: 2 }}
+              sx={{ 
+                mt: 3, 
+                mb: 2, 
+                display: "block",
+                marginLeft: "auto",
+                marginRight: "auto",
+               }}
             >
               Criar Conta
             </ButtonAtom>

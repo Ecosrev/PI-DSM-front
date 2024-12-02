@@ -1,16 +1,21 @@
-"use client";
+'use client'
 
+import { useState } from "react";
 import { IBeneficios } from "@/interfaces/IBeneficios";
 import { BeneficioEditValidator } from "@/validators/BeneficioEditValidator";
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography, Snackbar, Alert } from "@mui/material";
 import { useFormik } from "formik";
-import axios from "axios";
 import Layout from "@/components/UI/organisms/Layout";
-import router, { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { benefitsService } from "../../../../routes/benefitRoute";
 import { withAdminProtection } from "@/components/HOCS/withAdminProtection";
+import ButtonAtom from "@/components/UI/atoms/ButtonAtom";
 
 const CadastroTemplate: React.FC = () => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+
   const formik = useFormik<IBeneficios>({
     initialValues: {
       data: "",
@@ -21,14 +26,26 @@ const CadastroTemplate: React.FC = () => {
     },
     validationSchema: BeneficioEditValidator,
     onSubmit: async (values) => {
-      console.log(values);
       try {
-        const response = benefitsService.createBenefit(values); // Altere a URL conforme necessário
+        const response = await benefitsService.createBenefit(values);
         console.log("Cadastro realizado com sucesso:", response);
-        // Aqui você pode redirecionar ou exibir uma mensagem de sucesso
+        
+        // Show success message in Snackbar
+        setSnackbarMessage("Cadastro realizado com sucesso!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+
+        // Wait for 2 seconds before redirecting
+        setTimeout(() => {
+          router.push("/beneficios");
+        }, 2000); // 2000 milliseconds = 2 seconds
       } catch (error) {
         console.error("Erro ao cadastrar benefício:", error);
-        // Exibir uma mensagem de erro, se necessário
+        
+        // Show error message in Snackbar
+        setSnackbarMessage("Erro ao cadastrar benefício, verifique com o suporte");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
       }
     },
   });
@@ -38,7 +55,11 @@ const CadastroTemplate: React.FC = () => {
   const router = useRouter();
 
   const handleCancel = () => {
-    router.push("/home"); // Redireciona para a página principal
+    router.push("/home");
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -75,13 +96,13 @@ const CadastroTemplate: React.FC = () => {
             label="Data"
             fullWidth
             margin="normal"
-            type="date" // Define o tipo como "date"
+            type="date"
             value={values.data}
             onChange={handleChange}
             error={!!errors.data}
             helperText={errors.data}
             InputLabelProps={{
-              shrink: true, // Garante que o label não sobreponha o valor
+              shrink: true,
             }}
           />
           <TextField
@@ -117,16 +138,27 @@ const CadastroTemplate: React.FC = () => {
             helperText={errors.quantidade}
           />
 
-          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
-            <Button variant="outlined" color="secondary" onClick={handleCancel}>
+          <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 3, gap: 2 }}>
+            <Button variant="outlined" color="primary" onClick={handleCancel} sx={{ boxShadow: 3 }}>
               Cancelar
             </Button>
-            <Button variant="contained" color="primary" type="submit">
+            <ButtonAtom variant="contained" type="submit">
               Cadastrar
-            </Button>
+            </ButtonAtom>
           </Box>
         </Box>
       </Box>
+
+      {/* Snackbar for success or error messages */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Layout>
   );
 };

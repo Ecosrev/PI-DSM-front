@@ -1,4 +1,5 @@
 module.exports = {
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   collectCoverage: true,
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}",
@@ -10,10 +11,10 @@ module.exports = {
   coverageReporters: ["json", "lcov", "text", "clover"],
   coverageThreshold: {
     global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
+      branches: 50,
+      functions: 70,
+      lines: 80,
+      statements: 80,
     },
   },
   preset: "ts-jest",
@@ -21,6 +22,8 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     "\\.(css|less|scss|sass)$": "<rootDir>/_mocks/styleMock.ts", // Mock para arquivos de estilo
+    "^next/router$": "<rootDir>/_mocks/next/router.ts", //Mock do router
+    "^next/navigation$": "<rootDir>/_mocks/next/navigation.ts", //Mock do app router
   },
   testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
   transform: {

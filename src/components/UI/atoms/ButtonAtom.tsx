@@ -8,6 +8,7 @@ interface ButtonAtomProps {
   variant?: "text" | "outlined" | "contained";
   color?: "primary" | "secondary" | "success" | "error" | "info" | "warning";
   sx?: object;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
@@ -26,7 +27,10 @@ const ButtonAtom: React.FC<ButtonAtomProps> = ({
       fullWidth={fullWidth}
       variant={variant}
       color={color}
-      sx={sx}
+      sx={{
+        ...sx,
+        color: 'white',
+      }}
       onClick={onClick}
     >
       {children}

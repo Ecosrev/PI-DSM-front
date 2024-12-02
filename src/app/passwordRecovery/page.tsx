@@ -15,10 +15,7 @@ interface PasswordRecoveryData {
 }
 
 const PasswordRecovery: React.FC = () => {
-  const [formData, setFormData] = useState<PasswordRecoveryData>({
-    email: "",
-  });
-
+  const [formData, setFormData] = useState<PasswordRecoveryData>({ email: "" });
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const router = useRouter();
@@ -30,8 +27,7 @@ const PasswordRecovery: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // Logica do backend simulada
-    const simulatedDelay = 1000; 
+    const simulatedDelay = 1000;
     try {
       await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
       setSuccess("Link de recuperação de senha enviado com sucesso!");
@@ -43,19 +39,27 @@ const PasswordRecovery: React.FC = () => {
 
   return (
     <AuthTemplate backgroundImage={backgroundRoadImage.src}>
-      <Header />
+      <Box
+        sx={{
+          // Oculta o Header no modo landscape
+          display: { xs: "block", sm: "block", orientation: "portrait" },
+        }}
+      >
+        <Header />
+      </Box>
 
       <Container
         component="main"
-        maxWidth="xs"
         sx={{
           position: "relative",
           zIndex: 1,
-          paddingTop: "120px",
+          paddingTop: { xs: "80px", sm: "120px" },
+          paddingBottom: { xs: "40px", sm: "80px" },
+          width: "100%",
           display: "flex",
-          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          minHeight: "100vh", // Garante que o container ocupe a altura total da tela
         }}
       >
         <Box
@@ -63,13 +67,23 @@ const PasswordRecovery: React.FC = () => {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            width: "100%",
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
+            width: "90%", // Adapta a largura proporcionalmente
+            maxWidth: "400px", // Limita a largura máxima em telas maiores
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
             borderRadius: "10px",
-            padding: 4,
+            padding: { xs: 2, sm: 4 }, // Padding adaptativo
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <Typography variant="h5" color="primary" gutterBottom>
+          <Typography
+            variant="h5"
+            color="primary"
+            gutterBottom
+            sx={{
+              textAlign: "center",
+              textShadow: "1px 1px 3px rgba(0, 0, 0, 0.2)",
+            }}
+          >
             Recuperação de Senha
           </Typography>
 
@@ -83,15 +97,27 @@ const PasswordRecovery: React.FC = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              sx={{ marginBottom: 2 }}
             />
 
-            {error && <Typography color="error">{error}</Typography>}
-            {success && <Typography color="success">{success}</Typography>}
+            {error && (
+              <Typography color="error" sx={{ marginBottom: 2 }}>
+                {error}
+              </Typography>
+            )}
+            {success && (
+              <Typography color="success" sx={{ marginBottom: 2 }}>
+                {success}
+              </Typography>
+            )}
 
             <ButtonAtom
               type="submit"
-              fullWidth
-              sx={{ marginTop: 3, marginBottom: 2 }}
+              sx={{
+                mt: 3,
+                mb: 2,
+                width: "100%", // Botão se adapta à largura do formulário
+              }}
             >
               Enviar Link de Recuperação
             </ButtonAtom>
