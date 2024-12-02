@@ -1,6 +1,8 @@
 import "@testing-library/jest-dom";
 
-global.matchMedia = global.matchMedia || function(query: string) {
+global.matchMedia =
+  global.matchMedia ||
+  function (query: string) {
     return {
       matches: false, // Pode ser ajustado conforme necessário
       media: query, // A propriedade 'media' deve ser o valor da consulta
