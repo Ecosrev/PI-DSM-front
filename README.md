@@ -126,10 +126,13 @@ A plataforma foi projetada com uma interface limpa e intuitiva, priorizando a ex
 ## 💡 Protótipo e documentação
 
 Acesse o protótipo interativo no Figma:  
+<p></p>
 [Protótipo no Figma](https://www.figma.com/design/9qf7Ry7BcaML25kAtYWB17/Untitled)
+</p>
+<p>
 Acesee a documentação:
 [Documentação](https://github.com/Ecosrev/PI-DSM-front/blob/master/public/images/doc/DOCUMENTA%C3%87%C3%83O%20LABDEV.pdf)
-
+</p>
 ---
 
 <details>
