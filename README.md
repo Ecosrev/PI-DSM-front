@@ -123,10 +123,12 @@ A documentação fornece detalhes sobre as rotas disponíveis, parâmetros neces
 ## 🎨 Design e Interfaces
 A plataforma foi projetada com uma interface limpa e intuitiva, priorizando a experiência do usuário. O design segue a filosofia de Atomic Design, garantindo que os componentes sejam reutilizáveis e facilmente escaláveis. A paleta de cores foi escolhida para ser suave e amigável, com destaque para tons de verde, transmitindo compromisso com o meio ambiente.
 
-## 💡 Protótipo
+## 💡 Protótipo e documentação
 
 Acesse o protótipo interativo no Figma:  
 [Protótipo no Figma](https://www.figma.com/design/9qf7Ry7BcaML25kAtYWB17/Untitled)
+Acesee a documentação:
+[Documentação](https://github.com/Ecosrev/PI-DSM-front/blob/master/public/images/doc/DOCUMENTA%C3%87%C3%83O%20LABDEV.pdf)
 
 ---
 
@@ -181,7 +183,7 @@ Acesse o protótipo interativo no Figma:
    Você pode baixar o material completo em um arquivo .doc com as instruções detalhadas no link abaixo:
   </p>  
   
-  <a href="https://www.exemplo.com/arquivo/docker_instrucoes.doc" target="_blank">Baixar Instruções do Docker</a>
+  <a href="https://github.com/Ecosrev/PI-DSM-front/blob/master/public/images/doc/Projeto%20Integrador.pdf" target="_blank">Baixar Instruções do Docker</a>
     
   <details>
     <summary>🐳 Docker: Frontend</summary>
