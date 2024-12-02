@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watchAll --verbose npm --forceExit"
+    "test": "jest --watchAll --verbose --forceExit"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
